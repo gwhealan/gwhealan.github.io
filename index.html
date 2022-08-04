@@ -2,35 +2,73 @@
 <html>
 <head>
 <title>Graham Whealan - Home</title>
-<link rel="stylesheet" href="format.css">
-<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<link rel="stylesheet" href="index.css">
+<meta name='viewport'  content='width=device-width, initial-scale=1.0'>
+<script>
+function toggle_burger(parent_id, content_id, effect) {
+	var parent = document.getElementById(parent_id);
+	try {
+		parent.querySelector('.burger-top').classList.replace('burger-top', 'x-left');
+		parent.querySelector('.burger-middle').classList.replace('burger-middle', 'x-left');
+		parent.querySelector('.burger-bottom').classList.replace('burger-bottom', 'x-right');
+		document.getElementById(content_id).classList.add(effect);
+	} catch (err){
+		parent.querySelector('.x-left').classList.replace('x-left', 'burger-top');
+		parent.querySelector('.x-left').classList.replace('x-left', 'burger-middle');
+		parent.querySelector('.x-right').classList.replace('x-right', 'burger-bottom');
+		document.getElementById(content_id).classList.remove(effect);
+		//alert("adding");
+	}
+}
+</script>
 </head>
 <body style="margin:0;">
 <header>
-	<!--<a class="header" style="font-size:2em; border-bottom:1px solid white; width:50%; max-width:500px; min-width:250px;" href="home.html">Graham Whealan</a>-->
-	<a href="home.html"><h1>Graham Whealan</h1></a><hr>
-	<a target="_blank" href="https://github.com/gwhealan">Github</a>|<a href="mailto:gwhealan@gmail.com">Email</a>|<a target="_blank" href="https://www.linkedin.com/in/graham-whealan-ba1780229/">LinkedIn</a></div>
+	<h1 class="header-title">Graham Whealan</h1>
+	<button id="header-burger" class="burger-container" onclick="toggle_burger('header-burger', 'header-ref', 'header-container-show')">
+		<div class="burger-top x-top"></div>
+		<div class="burger-middle x-middle"></div>
+		<div class="burger-bottom x-bottom"></div>
+	</button>
 </header>
+<section id='header-ref' class="header-container flex-container">
+		<div class="spacer"></div>
+		<a class="header-link link" href="mailto:gwhealan@gmail.com">Email</a>
+		<div class="spacer"></div>
+		<a class="header-link link" href="https://github.com/gwhealan">Github</a>
+		<div class="spacer"></div>
+		<a class="header-link link" href="https://www.linkedin.com/in/graham-whealan-ba1780229/">LinkedIn</a>
+		<div class="spacer"></div>
+</section>
 <main>
+<section id="about">
 <h2>About</h2>
-<p>Hey was up.... this me</p>
+<p>Hello. My name is Graham Whealan. I am a developer who graduated from the University of Oregon. Here is a collection of some of the projects I have developed in various fields. I hope you enjoy.</p>
+</section>
+<section id="skill">
 <h2>Skills</h2>
 <ul>
-	<li><u>Programming Languages:</u> C++, C, C#, Python, Java, HTML, CSS, PHP</li>
-	<li><u>Platform:</u> Windows, Linux</li>
-	<li><u>Database:</u> SQL</li>
-	<li><u>Revision Control:</u> Git</li>
+<li><b>Programing Languages:</b> C, C++, C#, Python, Java, HTML, CSS, PHP, ML</li>
+<li><b>Platforms:</b> Windows, Linux</li>
+<li><b>Database:</b> SQL</li>
+<li><b>Revision Control:</b> Git</li>
 </ul>
+</section>
+<section id="project">
 <h2>Projects</h2>
-<div id="project-card">
-<script>
-	$.getJSON("data.js", function(result){
-	  $.each(result, function(i, field){
-		$("#project-card").append(field + " ");
-	  });
-	});
-</script>
+<div class="flex-container">
+<div class="card">
+	<h3 class="card-title">Crossword Builder</h3>
+	<p class="card-description">Crossword building command line tool designed around an A* search algorithm. Can resonably proccess crosswords of up to size 5x5.</p>
+	<a class="link align-middle" href="https://github.com/wilsprouse/422-proj2">Github</a>
 </div>
+<div class="card">
+	<h3 class="card-title">Game Database</h3>
+	<p class="card-description">A Database and website that records and catagorizes retro games using SQL and PHP.</p>
+	<a class="link align-middle" href="https://github.com/gwhealan/gameArchive">Github</a>
+</div>
+</div>
+</section>
 </main>
 </body>
 </html>
