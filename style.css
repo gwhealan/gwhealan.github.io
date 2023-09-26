@@ -1,0 +1,113 @@
+:root {
+	--bgcolor:		black;
+	--cardcolor1:	#0C0024;
+	--cardcolor2:	#420056;
+	--cardcolor3:	#66247A;
+	--textcolor1:	#D861E1;
+	--textcolor2:	#FCCCFF;
+}
+
+body {
+	background-color: var(--bgcolor);
+	margin: 0;
+	width: 100%;
+	font-family: 'Courier New', monospace;
+	color: var(--textcolor1);
+}
+
+.center-elem, .center {
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.center-text, .center {
+	text-align:		center;
+	vertical-align:	middle;
+}
+
+.header-full, .header-top {
+	background-color:	var(--cardcolor1);
+	font-style:			bold;
+	top: 0;
+	left: 0;
+	width: 100%;
+	zindex: 2;
+}
+
+.header-full {
+	position: absolute;
+	height: 100vh;
+}
+
+.header-top {
+	position: fixed;
+	height: 100px;
+}
+
+.header-title {
+	position: absolute;
+	zindex: 3;
+}
+
+.body {
+	padding-top: 100vh;	
+	padding-left: 2em;
+	madding-right: 2em;
+	width: calc(100% - 4em);
+	max-width: 800px;
+}
+
+.line {
+	display: block;
+	margin-top: 0.5em;
+	margin-bottom: 0.25em;
+	width: 90vw;
+	height: 0;
+	border: 1px solid var(--textcolor1);
+}
+
+.card {
+	display: block;
+	background-color: var(--cardcolor2);
+	padding: 1em;
+	margin: 1em;
+	border-radius: 1em;
+	transition: color .5s;
+	transition: background-color .5s;
+}
+
+.card:hover {
+	background-color: var(--cardcolor3);
+	color: var(--textcolor2);
+}
+
+.card h1 {
+	margin-top: 0;
+}
+
+a.card {
+	color: inherit;
+	text-decoration: inherit;
+}
+
+.links {
+	position: fixed;
+	right: 0;
+	display: flex;
+	flex-direction: reverse-column;
+	align-items: center;
+	transition: bottom .5s;
+}
+
+
+
+.link {
+	margin: 0.5em;
+}
+
+.link img {
+	border-radius: 100%;
+	width: 50px;
+	height: 50px;
+}

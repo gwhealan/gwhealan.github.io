@@ -1,111 +1,137 @@
 <!DOCTYPE HTML>
+<html>
 <head>
 	<title>Graham Whealan</title>
-	<link rel='stylesheet' href='index.css'>
+	<link rel='stylesheet' href='style.css'>
 	<meta name='viewport' content='width=device-width, initial-scale=1.0'>
-</head>
-<body>
-	<div id="header">
-		<div class="header-title">Graham Whealan</div>
-		<div id="glossery" class="header-glossery">
-			<script>
-				async function InitGlossery() {
-					let content = "";
-					document.querySelectorAll(".page-section").forEach( (element) => {
-						let title	= element.children[0].innerHTML;
-						let anchor	= element.id;
-						content += "<a href=\'#" + anchor + "\' class=\'glossery-item\''>" + title + "</a>"
-					});
-					document.getElementById("glossery").innerHTML = content;
-				}
+	<script type="text/javascript" src="scripts/util.js"></script>
+	<script type="text/javascript">
+		const header1_min = 1.5;
+		const header1_max = 2.5;
+		const header2_min = 0.75;
+		const header2_max = 1.25;
+		const HeaderFunction = function() {
+			let toggled = false;
+			return function(head, links) {
+				let i = window.innerHeight - document.documentElement.scrollTop - 100;
 
-				var MakeActive = (function() {
-						var lastI = -1; // Static variable
-						return function(i) {
-							if (i != lastI)
-							{
-								let cards = document.querySelectorAll('.project-card');
-								if (lastI >= 0)
-									cards[lastI].classList.remove('project-card-active');
-								lastI = i;
-								cards[i].classList.add('project-card-active');
-							}
-						};					
-					})();
-
-				async function fetchJSON(request) {
-					try {
-						const response = await fetch(request);
-						const contentType = response.headers.get("content-type");
-						if (!contentType || !contentType.includes("application/json")) {
-							throw new TypeError("Oops, we haven't got JSON!");
-						}
-						return await response.json();
-					} catch (error) {
-						console.error("Error:", error);
+				if (i < 0)
+				{
+					if (!toggled)
+					{
+						head.classList.add('header-top');
+						head.classList.remove('header-full');
+						links.style.bottom = '0';
+						toggled = true;
 					}
 				}
-
-
-				async function InitProjects() {
-					let content = "";
-					const json = await fetchJSON("Projects.json");
-					json.forEach((elem, index) => {
-						content += "<div class=\'project-card\' onclick=\'MakeActive(" + index + ");\'><div class=\'card-title\'>" + elem.title + "</div><p class=\'card-description\'>" + elem.desc + "</p><div class=\'card-links\'>" + elem.links + "</div></div>";
-					});
-
-					document.getElementById("projects").children[1].innerHTML = content;
+				else
+				{
+					if (toggled)
+					{
+						head.classList.add('header-full');
+						head.classList.remove('header-top');
+						links.style.bottom = '-1000px';
+						toggled = false;
+					}
+					let a = i / (window.innerHeight - 100);
+					head.firstElementChild.firstElementChild.style.fontSize = `${MapToRatio(header1_min, header1_max, a)}em`;
+					head.firstElementChild.lastElementChild.style.fontSize	= `${MapToRatio(header2_min, header2_max, a)}em`
 				}
 
-				window.onload = function() {
-					InitProjects();
-					InitGlossery();
-				};
-			</script>
+				PositionInVisibleParent(head.firstElementChild);
+			};
+		}();
+
+		function LoadCards(list)
+		{
+			// Sort Cards
+			list.sort((a, b) => {
+				let priority = 0;
+				if ('priority' in a)
+					priority	= a.priority;
+				if ('priority' in b)
+					priority	-= b.priority;
+				if (priority == 0)
+					return (new Date(a.date)) - (new Date(b.date));
+				return priority;
+			});
+
+			// Write to page
+			let contents = "";
+			for(let i in list) {
+				if (list[i].link !== null)
+					contents += `<a target=\"_blank\" href=\"${list[i].link}\"class=\"card\">`;
+				else
+					contents += '<div class=\"card\">';
+				contents += `<div>${(new Date(list[i].date)).toDateString()}</div>`
+				contents += `<h1>${list[i].title}</h1><p>${list[i].info}</p>`;
+				if (list[i].link !== null)
+					contents += '</a>';
+				else
+					contents += '</div>';
+			}
+			if (contents.length > 0)
+				document.getElementById('cards').innerHTML = contents;
+		}
+
+		function LoadLinks(list)
+		{
+			let contents = "";
+			for(let i in list) {
+				contents += `<a class=\"link\" target=\"_blank\" href=\"${list[i].link}\"><img src=\"${list[i].img}\" alt=\"${list[i].name}\"></img></a>`;
+			}
+			if (contents.length > 0)
+				document.getElementById('links').innerHTML = contents;
+		}
+
+		function LoadData(path)
+		{
+			let xhttp = new XMLHttpRequest();
+			xhttp.onreadystatechange = function() {
+				if (this.readyState != 4 && this.status != 200)
+					return;
+
+				//let dest	= document.getElementById("cards");
+				console.log(this.responseText);
+				const json	= JSON.parse(this.responseText);
+				LoadCards(json.cards);
+				LoadLinks(json.links);				
+			};
+			xhttp.open("GET", path, true);
+			xhttp.send();
+		}
+
+		window.onload = function() {
+			// Store some variables...
+			let header = document.getElementById("header");
+			let links = document.getElementById("links");
+
+			// Call some stuff quick...
+			HeaderFunction(header);
+
+			// Add to listeners
+			let header_f = CallOnElement(HeaderFunction, header, links);
+			document.addEventListener('scroll', header_f);
+			document.addEventListener('resize', header_f);
+
+			// Load Cards
+			LoadData('data.json');
+		};
+	</script>
+</head>
+<body>
+	<div id="header" class="header-full center-text">
+		<div class="header-title">
+			<div>Graham Whealan</div>
+			<div class="line center-elem"></div>
+			<div>A collection of updates and ramblings on my personal projects and various interests.</div>
 		</div>
 	</div>
-	<div id="page" class="flex-box">
-		<div id='about' class='page-section'>
-			<div class='title2'>About</div>
-			<p class='page-section-content'>Hello. My name is Graham Whealan. I am a graduate of the University of Oregon majoring in Computer Science. Here's a collection of projects developed in various fields. Hope you enjoy.</p>
-		</div>
-		<div id='skills' class='page-section'>
-			<div class='title2'>Skills</div>
-			<div class='page-section-content'>
-				<ul>
-					<li><b>Programing Languages:</b> C, C++, C#, Python, Java, HTML, CSS, PHP, ML</li>
-					<li><b>Platforms:</b> Windows, Linux</li>
-					<li><b>Database:</b> SQL</li>
-					<li><b>Revision Control:</b> Git</li>
-				</ul>
-			</div>
-		</div>
-		<div id='projects' class='page-section'>
-			<div class='title2'>Projects</div>
-			<div class='page-section-content flex-box'>
-				<!--
-				<div class='project-card' onclick="MakeActive(0);">
-					<div class='card-title'>Project Title</div>
-					<p class='card-description'>This is some project that does something cool i guess.</p>
-					<div class='card-links'>
-						Links...
-					</div>
-				</div>
-				<div class='project-card' onclick="MakeActive(1);">
-					<div class='card-title'>Project Title</div>
-					<p class='card-description'>This is some project that does something cool i guess.</p>
-					<div class='card-links'>
-						Links...
-					</div>
-				</div>
-				<div class='project-card' onclick="MakeActive(2);">
-					<div class='card-title'>Long Project</div>
-					<p class='card-description'>This is some project that does something cool i guess. But it takes a bunch of time to describe so it might fuck up the formating. Blah blah blah blah blahblah blahblah blahblah blahblah blahblah blahblah blahblah blahblah blahblah blahblah blahblah blahblah blahblah blahblah blahblah blahblah blahblah blahblah blahblah blahblah blah.</p>
-					<div class='card-links'>
-						Links...
-					</div>
-				</div>
-				-->
-			</div>
+	<div id="cards" class="body center-elem">
+		<div style="margin-top: 0.5em; margin-bottom: 0.5em; font-size:1.5em;"class="center">Oops!! Something Went Wrong.</div>
+	</div>
+	<div id="links" class="links">
 	</div>
 </body>
+</html>
